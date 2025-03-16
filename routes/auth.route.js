@@ -7,7 +7,7 @@ const authRouter = express.Router();
 authRouter.get("/", authController.authorizeApp);
 
 // Route to handle OAuth callback
-authRouter.get("/google-forms", authController.handleOAuthRedirect);
+authRouter.get("/google-sheets", authController.handleOAuthRedirect);
 
 // Existing authentication route
 authRouter.post("/", authController.handleUserAuthentication);
