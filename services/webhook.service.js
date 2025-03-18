@@ -1,53 +1,16 @@
-import { exec } from "child_process";
-import { secretToken } from "../utils/config.js";
+import { Storage } from '@mondaycom/apps-sdk';
 
-const initializeMapps = () => {
-  return new Promise((resolve, reject) => {
-    const command = `mapps init -t ${secretToken}`;
-    
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error("Error initializing mapps:", error);
-        reject(error);
-      }  if (stderr) {
-        console.error("mapps init stderr:", stderr);
-        reject(stderr);
-      }
-        console.log("mapps initialized successfully:", stdout);
-        resolve(stdout);
-      
-    });
-  });
-};
-const deleteData = async (appId, accountId) => {
-  try {
-    console.log("deleteData started with:", appId, accountId);
-    await initializeMapps();
 
-    return new Promise((resolve, reject) => {
-      const command = `echo yes | mapps storage:remove-data -a ${appId} -c ${accountId}`;
+const deleteData = async (access_token, accountId) => {  
+    const storage = new Storage(access_token);
 
-      console.log("Executing command:", command);
+    const url = `user_data_${accountId}`;  // ✅ This key identifies the user's stored data
 
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error("Error executing delete command:", error);
-          return reject(error);
-        }
-        if (stderr) {
-          console.error("Delete stderr:", stderr);
-          return reject(stderr);
-        }
+    const { success, error } = await storage.delete(url, { shared: true });
 
-        console.log("Delete stdout:", stdout);
-        resolve(stdout);
-      });
-    });
-  } catch (error) {
-    console.error("Error during deleteData execution:", error);
-    return Promise.reject(error);
-  }
+    return success 
+        ? { message: "User data deleted successfully" } 
+        : { message: error };
 };
 
-
-export default { deleteData };
+export default {deleteData};
