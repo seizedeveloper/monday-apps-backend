@@ -21,12 +21,17 @@ const handleOAuthRedirect = catchAsync(async (req, res) => {
     }
 
     try {
-        const tokenResponse = await axios.post("https://auth.monday.com/oauth2/token", {
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            code,
-            redirect_uri: REDIRECT_URI,
-        });
+        const tokenResponse = await axios.post("https://auth.monday.com/oauth2/token", 
+            new URLSearchParams({
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                code,
+                redirect_uri: REDIRECT_URI,
+            }), 
+            {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            }
+        );
 
         console.log("Access Token Response:", tokenResponse.data);
         

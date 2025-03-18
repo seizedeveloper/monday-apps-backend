@@ -2,6 +2,7 @@ import { webhookService } from "../services/index.js"
 import {google_forms_secret} from "../utils/config.js"
 import catchAsync from "../utils/catchAsync.js"
 import { response } from "express";
+import jwt from "jsonwebtoken";
 
 const editData=  catchAsync(async (req, res) => {
 
@@ -16,11 +17,10 @@ const editData=  catchAsync(async (req, res) => {
     
         // Extract the token (remove "Bearer " prefix)
         const token = authHeader.split(" ")[1];
+        console.log("Received Token:", token);  // Log the token
     
         // Verify and decode the token
-        const decoded = jwt.verify(token, google_forms_secret); 
-    
-        console.log("Decoded JWT:", decoded);
+        
 
 
         const event = req.body;
@@ -43,7 +43,7 @@ const editData=  catchAsync(async (req, res) => {
         res.status(200).json(response); // Use the final response here
         
       } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
+        res.status(401).json({ error: error.message });
       }
     
     
