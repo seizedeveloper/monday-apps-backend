@@ -1,20 +1,16 @@
 import { Storage } from '@mondaycom/apps-sdk';
 
 
-const deleteData = async (access_token) => {
+const deleteData = async (access_token, accountId) => {  
     const storage = new Storage(access_token);
 
+    const url = `user_data_${accountId}`;  // ✅ This key identifies the user's stored data
 
-    const { success, error } = await storage.delete(url, { shared });
+    const { success, error } = await storage.delete(url, { shared: true });
 
-    if (success===true){
-        const response = { message: "User data deleted successfully" };
-    }
-    else{
-        const response = { message: error };
-    }
-    return response;
-
-}
+    return success 
+        ? { message: "User data deleted successfully" } 
+        : { message: error };
+};
 
 export default {deleteData};
