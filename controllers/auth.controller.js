@@ -11,7 +11,6 @@ const authorizeApp = (req, res) => {
     console.log("Redirecting to OAuth URL:", authUrl);
     res.redirect(authUrl);
 };
-
 // Step 2: Handle OAuth callback and fetch access token
 const handleOAuthRedirect = catchAsync(async (req, res) => {
     const { code } = req.query;
@@ -34,6 +33,7 @@ const handleOAuthRedirect = catchAsync(async (req, res) => {
         );
 
         console.log("Access Token Response:", tokenResponse.data);
+
         
         // You can store this token in a database if needed
         res.json({ message: "OAuth Successful", token: tokenResponse.data });
