@@ -1,25 +1,54 @@
-import { Storage } from '@mondaycom/apps-sdk';
+import { exec } from "child_process";
+import punycode from 'punycode';
 
-const deleteData = async (access_token, accountId) => {
-    const storage = new Storage(access_token);
-    const testKey = `user_data_${accountId}`;
-
-    // Store data
-    const storeResult = await storage.set(testKey, { test: "Hello World" }, { shared: true });
-    console.log(storeResult.success ? "Data stored successfully!" : `Storage error: ${storeResult.error}`);
-
-    // Wait for data to be properly stored (sometimes necessary)
-    await new Promise((resolve) => setTimeout(resolve, 500));  
-
-    // Try searching for the exact key
-    const { value, version, success } = await storage.get(testKey, { shared: true });
-    console.log(success ? `Retrieved Data: ${JSON.stringify(value)}` : "No data found");
-
-    // Delete stored data
-    const deleteResult = await storage.delete(testKey, { shared: true });
-    console.log(deleteResult.success ? "User data deleted successfully!" : `Delete error: ${deleteResult.error}`);
-
-    return deleteResult;
+const secretToken="eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjM3NTE1MjAwNSwiYWFpIjoxMSwidWlkIjo2MjM4MTM1OSwiaWFkIjoiMjAyNC0wNi0yMVQxMzozMjozMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjQwMjk2MDcsInJnbiI6ImFwc2UyIn0.P-hUHn3gttPPA77hUIJ6QlG8v0BCawAwg_TKe4juwRA";
+const initializeMapps = () => {
+  return new Promise((resolve, reject) => {
+    const command = `mapps init -t ${secretToken}`;
+    
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error("Error initializing mapps:", error);
+        reject(error);
+      }  if (stderr) {
+        console.error("mapps init stderr:", stderr);
+        reject(stderr);
+      }
+        console.log("mapps initialized successfully:", stdout);
+        resolve(stdout);
+      
+    });
+  });
 };
+const deleteData = async (appId, accountId) => {
+  try {
+    console.log("deleteData started with:", appId, accountId);
+    await initializeMapps();
+
+    return new Promise((resolve, reject) => {
+      const command = `echo yes | mapps storage:remove-data -a ${appId} -c ${accountId}`;
+
+      console.log("Executing command:", command);
+
+      exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error("Error executing delete command:", error);
+          return reject(error);
+        }
+        if (stderr) {
+          console.error("Delete stderr:", stderr);
+          return reject(stderr);
+        }
+
+        console.log("Delete stdout:", stdout);
+        resolve(stdout);
+      });
+    });
+  } catch (error) {
+    console.error("Error during deleteData execution:", error);
+    return Promise.reject(error);
+  }
+};
+
 
 export default { deleteData };

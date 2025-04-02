@@ -1,9 +1,9 @@
 import axios from "axios";
 import catchAsync from "../utils/catchAsync.js";
 
-const CLIENT_ID = "6eb83b808f42f9f9b312be38a38ecb46";  // Get from Monday Developer Center
-const CLIENT_SECRET = "763c4a4c30ba812dfd094ce411bb4b66";  // Get from Monday Developer Center
-const REDIRECT_URI = "http://localhost:3000/api/v1/auth/google-sheets";  // Must match Monday Developer settings
+const CLIENT_ID = "214dcad97b26838bfde696a7f32b77c5";  // Get from Monday Developer Center
+const CLIENT_SECRET = "c233324d5ecaf22aae6f74b6a295478f";  // Get from Monday Developer Center
+const REDIRECT_URI = "http://localhost:3000/api/v1/auth/google-forms";  // Must match Monday Developer settings
 
 // Step 1: Redirect user to Monday OAuth page
 const authorizeApp = (req, res) => {

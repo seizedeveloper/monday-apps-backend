@@ -7,7 +7,7 @@ import { PORT } from "./utils/config.js";
 
 
 const app = express();
-
+app.use(express.json()); 
 
 const monday = mondaySdk();
 monday.setApiVersion("2023-10");
