@@ -1,7 +1,6 @@
 import { exec } from "child_process";
-import punycode from 'punycode';
+import { secretToken } from "../utils/config.js";
 
-const secretToken="eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjM3NTE1MjAwNSwiYWFpIjoxMSwidWlkIjo2MjM4MTM1OSwiaWFkIjoiMjAyNC0wNi0yMVQxMzozMjozMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjQwMjk2MDcsInJnbiI6ImFwc2UyIn0.P-hUHn3gttPPA77hUIJ6QlG8v0BCawAwg_TKe4juwRA";
 const initializeMapps = () => {
   return new Promise((resolve, reject) => {
     const command = `mapps init -t ${secretToken}`;
