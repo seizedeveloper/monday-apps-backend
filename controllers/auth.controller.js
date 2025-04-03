@@ -1,12 +1,12 @@
 import axios from "axios";
 import catchAsync from "../utils/catchAsync.js";
-
-const CLIENT_ID = "214dcad97b26838bfde696a7f32b77c5";  // Get from Monday Developer Center
-const CLIENT_SECRET = "c233324d5ecaf22aae6f74b6a295478f";  // Get from Monday Developer Center
+import { CLIENT_ID,CLIENT_SECRET } from "../utils/config.js";
 const REDIRECT_URI = "http://localhost:3000/api/v1/auth/google-forms";  // Must match Monday Developer settings
+
 
 // Step 1: Redirect user to Monday OAuth page
 const authorizeApp = (req, res) => {
+    console.log(CLIENT_ID,CLIENT_SECRET);
     const authUrl = `https://auth.monday.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
     console.log("Redirecting to OAuth URL:", authUrl);
     res.redirect(authUrl);
