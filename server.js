@@ -23,7 +23,7 @@ app.get("/",(req,res)=>{
 app.use('/api/v1',routes);  
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT || 3000, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
