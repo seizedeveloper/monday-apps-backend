@@ -6,7 +6,7 @@ import mondaySdk from 'monday-sdk-js';
 const editData = catchAsync(async (req, res) => {
   try {
     const monday = mondaySdk();
-    monday.setApiVersion("2023-10");
+    monday.setApiVersion("2025-04");
 
     // Log everything to see what Monday is sending
     console.log("Received Webhook Headers:", req.headers);
