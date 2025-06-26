@@ -1,6 +1,7 @@
 import { webhookService } from "../services/index.js"
 import catchAsync from "../utils/catchAsync.js"
 import mondaySdk from 'monday-sdk-js';
+import WebhookEvent from '../models/WebhookEvent.js'
 
 
 const editData = catchAsync(async (req, res) => {
@@ -8,56 +9,32 @@ const editData = catchAsync(async (req, res) => {
     const monday = mondaySdk();
     monday.setApiVersion("2025-04");
 
-    // Log everything to see what Monday is sending
-    console.log("Received Webhook Headers:", req.headers);
-    console.log("Received Webhook Body:", req.body);
-
-    // Extract token from request body
     const token = req.headers.authorization;
+    if (!token) return res.status(401).json({ error: "No token provided" });
 
-    if (!token) {
-      return res.status(401).json({ error: "No token provided" });
-    }
-
-    console.log("Received Token:", token);
-    if (!req.body || !req.body.data) {
-      throw new Error("Invalid webhook structure");
-    }
-
-    //   console.log(req.body);
-    monday.setToken(token);
     const event = req.body;
-    let response;
+    if (!event || !event.data) return res.status(400).json({ error: "Invalid webhook structure" });
 
-    if (!req.body || !req.body.data) {
-      return res.status(400).json({ error: "Invalid webhook structure" });
-    }
+    const { app_name, user_email, user_id, account_tier, account_id } = event.data;
 
-    const { app_id, user_id, account_id } = req.body.data || {};
-    if (!app_id || !account_id || !user_id) {
-      return res.status(400).json({ error: "Missing required fields (app_id, user_id, account_id)" });
-    }
+    // Create and save document
+    const savedEvent = await WebhookEvent.create({
+      app_name,
+      event_type: event.type,
+      user_email,
+      user_id,
+      account_tier,
+      account_id,
+    });
 
+    console.log("Webhook event saved:", savedEvent);
 
-    if (event.type === "install") {
-      response = { success: true, message: "App Installed", data: event.data };
-      console.log("App Installed:", event.data);
-    } 
-    else if (event.type === "uninstall") {
-      console.log("appid and accountid are:", app_id, account_id);
-      response = await webhookService.deleteData(app_id, account_id);
-      console.log("App Uninstalled:", event.data);
-    } 
-    else {
-      response = { success: false, message: "Unhandled event type", eventType: event.type };
-      console.log("Unhandled event type:", event.type);
-    }
-
-    res.status(200).json(response);
+    res.status(200).json({ success: true, message: "Webhook event saved", data: savedEvent });
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 export default { editData };
