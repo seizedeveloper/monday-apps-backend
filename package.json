@@ -13,8 +13,10 @@
   "description": "",
   "dependencies": {
     "@mondaycom/apps-sdk": "^3.2.0",
+    "@sendgrid/mail": "^8.1.6",
     "axios": "^1.8.4",
     "body-parser": "^1.20.3",
+    "bottleneck": "^2.19.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
